@@ -1,4 +1,6 @@
-version in ThisBuild := "0.1"
+import sbtcrossproject.{crossProject, CrossType}
+
+version in ThisBuild := "0.2-SNAPSHOT"
 organization in ThisBuild := "com.yuiwai"
 scalaVersion in ThisBuild := "2.12.6"
 scalacOptions in ThisBuild ++= Seq(
@@ -8,13 +10,15 @@ scalacOptions in ThisBuild ++= Seq(
   "-Xlint",
 )
 
-lazy val core = (project in file("core"))
+lazy val core = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Pure) in file("core"))
   .settings(
-    name := "simple-task-core"
+    name := "raus-core"
   )
+lazy val coreJS = core.js
+lazy val coreJVM = core.jvm
 
 lazy val example = (project in file("example"))
   .settings(
-    name := "simple-task-example"
+    name := "raus-example"
   )
-  .dependsOn(core)
+  .dependsOn(coreJVM)
