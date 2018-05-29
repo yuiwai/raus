@@ -1,4 +1,4 @@
-package com.yuiwai.raus
+package com.yuiwai.raus.model
 
 sealed trait Custom
 case class Action() extends Custom

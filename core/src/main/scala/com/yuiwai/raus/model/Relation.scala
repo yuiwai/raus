@@ -1,4 +1,4 @@
-package com.yuiwai.raus
+package com.yuiwai.raus.model
 
 trait Relation
 case class DependsOn(from: Task, to: Task) extends Relation
