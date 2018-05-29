@@ -2,7 +2,7 @@ package com.yuiwai.raus.example
 
 import java.time.LocalDate
 
-import com.yuiwai.raus.{Date, User}
+import com.yuiwai.raus.model.{Date, User}
 
 object Example extends App with Fixtures {
   empty()
