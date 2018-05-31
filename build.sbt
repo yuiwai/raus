@@ -17,6 +17,18 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Pure)
 lazy val coreJS = core.js
 lazy val coreJVM = core.jvm
 
+lazy val ext = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Full) in file("ext"))
+  .settings(
+    name := "raus-ext"
+  )
+  .jsSettings(
+    libraryDependencies ++= Seq(
+      "org.scala-js" %%% "scalajs-dom" % "0.9.2"
+    )
+  )
+lazy val extJS = ext.js
+lazy val extJVM = ext.jvm
+
 lazy val example = (project in file("example"))
   .settings(
     name := "raus-example"
