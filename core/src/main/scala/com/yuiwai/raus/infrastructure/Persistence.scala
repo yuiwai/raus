@@ -1,6 +1,9 @@
 package com.yuiwai.raus.infrastructure
 
-trait Persistence
+trait Persistence {
+  def strategy: PersistentStrategy
+  def storage: PersistentStorage
+}
 sealed trait PersistentStrategy
 object PersistentStrategies {
   case object AllInOneSerialization extends PersistentStrategy
