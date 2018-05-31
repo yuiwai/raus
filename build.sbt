@@ -26,8 +26,8 @@ lazy val ext = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Full) 
       "org.scala-js" %%% "scalajs-dom" % "0.9.2"
     )
   )
-lazy val extJS = ext.js
-lazy val extJVM = ext.jvm
+lazy val extJS = ext.js.dependsOn(coreJS)
+lazy val extJVM = ext.jvm.dependsOn(coreJVM)
 
 lazy val example = (project in file("example"))
   .settings(
