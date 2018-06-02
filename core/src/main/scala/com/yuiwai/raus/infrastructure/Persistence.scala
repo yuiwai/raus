@@ -1,12 +1,20 @@
 package com.yuiwai.raus.infrastructure
 
+import com.yuiwai.raus.model.User
+
 trait Persistence {
-  def strategy: PersistentStrategy
-  def storage: PersistentStorage
+  protected val storage: PersistentStorage
+  protected def loadUser(key: String): Option[User] = storage.load(key)
+  protected def saveUser(key: String, user: User): Unit = storage.save(key, user)
 }
-sealed trait PersistentStrategy
-object PersistentStrategies {
-  case object AllInOneSerialization extends PersistentStrategy
-  case object Relational extends PersistentStrategy
+trait PersistentStorage {
+  def load(key: String): Option[User]
+  def save(key: String, user: User): Unit
 }
-trait PersistentStorage
+trait InMemoryStorage extends PersistentStorage {
+  private var db: Map[String, String] = Map.empty
+  protected def serialize(user: User): String
+  protected def deserialize(data: String): User
+  override def load(key: String): Option[User] = db.get(key).map(deserialize)
+  override def save(key: String, user: User): Unit = db = db.updated(key, serialize(user))
+}
