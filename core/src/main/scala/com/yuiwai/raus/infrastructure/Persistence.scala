@@ -11,10 +11,12 @@ trait PersistentStorage {
   def load(key: String): Option[User]
   def save(key: String, user: User): Unit
 }
-trait InMemoryStorage extends PersistentStorage {
+trait InMemoryStorage extends PersistentStorage with Serializer {
   private var db: Map[String, String] = Map.empty
-  protected def serialize(user: User): String
-  protected def deserialize(data: String): User
   override def load(key: String): Option[User] = db.get(key).map(deserialize)
   override def save(key: String, user: User): Unit = db = db.updated(key, serialize(user))
+}
+trait Serializer {
+  protected def serialize(user: User): String
+  protected def deserialize(data: String): User
 }
