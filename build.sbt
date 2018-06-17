@@ -10,9 +10,17 @@ scalacOptions in ThisBuild ++= Seq(
   "-Xlint",
 )
 
+lazy val root = project.in(file("."))
+  .aggregate(coreJS, coreJVM)
+  .settings(
+    publish := {},
+    publishLocal := {}
+  )
+
 lazy val core = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Pure) in file("core"))
   .settings(
-    name := "raus-core"
+    name := "raus-core",
+    publishTo := Some(Resolver.file("file", new File("release")))
   )
 lazy val coreJS = core.js
 lazy val coreJVM = core.jvm
