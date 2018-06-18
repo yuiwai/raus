@@ -1,6 +1,6 @@
 import sbtcrossproject.{crossProject, CrossType}
 
-version in ThisBuild := "0.2.0"
+version in ThisBuild := "0.3.0-SNAPSHOT"
 organization in ThisBuild := "com.yuiwai"
 scalaVersion in ThisBuild := "2.12.6"
 scalacOptions in ThisBuild ++= Seq(
@@ -13,6 +13,7 @@ scalacOptions in ThisBuild ++= Seq(
 lazy val root = project.in(file("."))
   .aggregate(coreJS, coreJVM)
   .settings(
+    name := "raus",
     publish := {},
     publishLocal := {}
   )
@@ -42,3 +43,26 @@ lazy val example = (project in file("example"))
     name := "raus-example"
   )
   .dependsOn(coreJVM)
+
+lazy val react = (project in file("react"))
+  .settings(
+    name := "raus-react",
+    libraryDependencies += "com.github.japgolly.scalajs-react" %%% "core" % "1.2.0",
+    jsDependencies ++= Seq(
+      "org.webjars.npm" % "react" % "16.2.0"
+        / "umd/react.development.js"
+        minified "umd/react.production.min.js"
+        commonJSName "React",
+      "org.webjars.npm" % "react-dom" % "16.2.0"
+        / "umd/react-dom.development.js"
+        minified "umd/react-dom.production.min.js"
+        dependsOn "umd/react.development.js"
+        commonJSName "ReactDOM",
+      "org.webjars.npm" % "react-dom" % "16.2.0"
+        / "umd/react-dom-server.browser.development.js"
+        minified "umd/react-dom-server.browser.production.min.js"
+        dependsOn "umd/react-dom.development.js"
+        commonJSName "ReactDOMServer")
+  )
+  .enablePlugins(ScalaJSPlugin)
+  .dependsOn(extJS)
