@@ -2,9 +2,6 @@ package com.yuiwai.raus.cli
 
 import com.yuiwai.raus.ext.Raus
 
-object Main extends Runner {
-  def main(args: Array[String]): Unit = run(args.toList)
-}
 trait Runner {
   val Tasks = "tasks"
   def run(args: List[String]): Unit = {

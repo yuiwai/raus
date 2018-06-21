@@ -30,6 +30,12 @@ lazy val ext = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Full) 
   .settings(
     name := "raus-ext"
   )
+  .jvmSettings(
+    libraryDependencies ++= Seq(
+      "com.lihaoyi" %% "upickle" % "0.6.6",
+      "com.github.pathikrit" %% "better-files" % "3.5.0"
+    )
+  )
   .jsSettings(
     libraryDependencies ++= Seq(
       "org.scala-js" %%% "scalajs-dom" % "0.9.2"
