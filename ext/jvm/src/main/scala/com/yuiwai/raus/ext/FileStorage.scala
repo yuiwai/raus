@@ -12,5 +12,8 @@ trait FileStorage extends PersistentStorage with Serializer {
     if (file.exists) Some(deserialize(file.contentAsString))
     else None
   }
-  override def save(key: String, user: User): Unit = ???
+  override def save(key: String, user: User): Unit = {
+    val file = File(fileName)
+    file.write(serialize(user))
+  }
 }
