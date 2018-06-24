@@ -30,6 +30,12 @@ lazy val ext = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Full) 
   .settings(
     name := "raus-ext"
   )
+  .jvmSettings(
+    libraryDependencies ++= Seq(
+      "com.lihaoyi" %% "upickle" % "0.6.6",
+      "com.github.pathikrit" %% "better-files" % "3.5.0"
+    )
+  )
   .jsSettings(
     libraryDependencies ++= Seq(
       "org.scala-js" %%% "scalajs-dom" % "0.9.2"
@@ -43,6 +49,18 @@ lazy val example = (project in file("example"))
     name := "raus-example"
   )
   .dependsOn(coreJVM)
+
+lazy val cli = (project in file("cli"))
+  .settings(
+    name := "raus-cli"
+  )
+  .dependsOn(extJVM)
+
+lazy val `example-cli` = (project in file("example-cli"))
+  .settings(
+    name := "example-cli"
+  )
+  .dependsOn(cli)
 
 lazy val react = (project in file("react"))
   .settings(
