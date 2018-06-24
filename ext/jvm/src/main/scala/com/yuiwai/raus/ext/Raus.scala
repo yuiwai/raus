@@ -3,7 +3,7 @@ package com.yuiwai.raus.ext
 import java.util.UUID
 
 import com.yuiwai.raus.infrastructure.{Persistence, PersistentStorage}
-import com.yuiwai.raus.model.{Task, User}
+import com.yuiwai.raus.model.Task
 
 object Raus {
   def withFileStorage(): Raus = new Raus {
@@ -11,20 +11,16 @@ object Raus {
   }
 }
 
-trait Raus extends Persistence {
-  private var user: User = User()
-  private def update(f: User => User): Unit = user = f(user)
+trait Raus extends Persistence with RausLike[Raus] {
   def load(key: String): Raus = {
-    storage.load(key).foreach { u =>
-      update(_ => u)
-    }
+    update(user => loadUser(key).getOrElse(user))
     this
   }
   def save(key: String): Raus = {
-    storage.save(key, user)
+    saveUser(key, user)
     this
   }
-  def tasks: Map[UUID, Task] = user.tasks
+  def tasks: Iterable[Task] = user.tasks.values
   def addTask(title: String): Raus = {
     update(_.addTask(title))
     this

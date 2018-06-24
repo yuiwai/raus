@@ -11,7 +11,7 @@ scalacOptions in ThisBuild ++= Seq(
 )
 
 lazy val root = project.in(file("."))
-  .aggregate(coreJS, coreJVM)
+  .aggregate(coreJS, coreJVM, extJS, extJVM)
   .settings(
     name := "raus",
     publish := {},
