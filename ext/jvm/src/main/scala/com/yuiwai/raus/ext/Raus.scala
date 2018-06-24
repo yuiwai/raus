@@ -7,7 +7,7 @@ import com.yuiwai.raus.model.{Task, User}
 
 object Raus {
   def withFileStorage(): Raus = new Raus {
-    override protected val storage: PersistentStorage = new FileStorage with UPickleSerializer
+    override protected val storage: PersistentStorage = new FileStorage with JacksonSerializer
   }
 }
 

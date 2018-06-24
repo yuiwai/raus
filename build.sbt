@@ -32,7 +32,7 @@ lazy val ext = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Full) 
   )
   .jvmSettings(
     libraryDependencies ++= Seq(
-      "com.lihaoyi" %% "upickle" % "0.6.6",
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.6",
       "com.github.pathikrit" %% "better-files" % "3.5.0"
     )
   )
