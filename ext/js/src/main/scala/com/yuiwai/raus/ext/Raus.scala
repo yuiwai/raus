@@ -3,7 +3,6 @@ package com.yuiwai.raus.ext
 import java.util.UUID
 
 import com.yuiwai.raus.infrastructure.{InMemoryStorage, Persistence, PersistentStorage}
-import com.yuiwai.raus.model.User
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
@@ -20,19 +19,22 @@ object Raus {
   }
 }
 
-trait Raus extends Persistence {
+trait Raus extends Persistence with RausLike[Raus] {
   import JsTask._
 
   import js.JSConverters._
 
-  private var user = User()
-  private def update(f: User => User): Unit = user = f(user)
+  @JSExport
+  def load(key: String): Raus = {
+    update(user => loadUser(key).getOrElse(user))
+    this
+  }
 
   @JSExport
-  def load(key: String): Unit = update(user => loadUser(key).getOrElse(user))
-
-  @JSExport
-  def save(key: String): Unit = saveUser(key, user)
+  def save(key: String): Raus = {
+    saveUser(key, user)
+    this
+  }
 
   @JSExport
   def tasks(): js.Array[JsTask] = user.tasks.values.map(toJsTask).toJSArray
