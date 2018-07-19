@@ -67,6 +67,7 @@ lazy val react = (project in file("react"))
     name := "raus-react",
     libraryDependencies += "com.github.japgolly.scalajs-react" %%% "core" % "1.2.0",
     jsDependencies ++= Seq(
+      "org.webjars.npm" % "js-tokens" % "3.0.2" / "3.0.2/index.js",
       "org.webjars.npm" % "react" % "16.2.0"
         / "umd/react.development.js"
         minified "umd/react.production.min.js"
