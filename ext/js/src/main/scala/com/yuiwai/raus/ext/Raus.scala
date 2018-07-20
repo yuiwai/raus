@@ -7,7 +7,7 @@ import com.yuiwai.raus.infrastructure.{InMemoryStorage, Persistence, PersistentS
 import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 
-@JSExportTopLevel("com.yuiwai.Raus")
+@JSExportTopLevel("raus.Raus")
 object Raus {
   @JSExport
   def withInMemoryStorage(): Raus = new Raus {
