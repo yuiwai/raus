@@ -1,6 +1,6 @@
 package com.yuiwai.raus.ext
 
-import com.yuiwai.raus.model.User
+import com.yuiwai.raus.model.{Date, User}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -12,6 +12,8 @@ trait RausLike[R <: RausLike[_]] {
   }
   def load(key: String): R
   def save(key: String): R
+  def addTaskByToday(title: String): R = update(_.addTask(title, Date.today))
+  def addTaskByTomorrow(title: String): R = update(_.addTask(title, Date.tomorrow))
 }
 
 trait AsyncRausLike[R <: AsyncRausLike[_]] {
