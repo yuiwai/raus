@@ -1,8 +1,8 @@
-import sbtcrossproject.{crossProject, CrossType}
+import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
 version in ThisBuild := "0.4.0-SNAPSHOT"
 organization in ThisBuild := "com.yuiwai"
-scalaVersion in ThisBuild := "2.12.6"
+crossScalaVersions in ThisBuild := Seq("2.12.6", "2.11.12")
 scalacOptions in ThisBuild ++= Seq(
   "-deprecation",
   "-feature",
@@ -18,13 +18,17 @@ lazy val root = project.in(file("."))
     publishLocal := {}
   )
 
-lazy val core = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Pure) in file("core"))
+lazy val core = (crossProject(JSPlatform, JVMPlatform, NativePlatform).crossType(CrossType.Pure) in file("core"))
   .settings(
     name := "raus-core",
     publishTo := Some(Resolver.file("file", new File("release")))
   )
+  .nativeSettings(
+    scalaVersion := "2.11.12"
+  )
 lazy val coreJS = core.js
 lazy val coreJVM = core.jvm
+lazy val coreNative = core.native
 
 lazy val ext = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Full) in file("ext"))
   .settings(
@@ -87,3 +91,10 @@ lazy val react = (project in file("react"))
   )
   .enablePlugins(ScalaJSPlugin)
   .dependsOn(extJS)
+
+lazy val ncurses = (project in file("ncurses"))
+  .settings(
+    name := "raus-ncurses",
+    scalaVersion := "2.11.12"
+  )
+  .enablePlugins(ScalaNativePlugin)
