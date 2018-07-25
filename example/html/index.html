@@ -6,55 +6,11 @@
     <title>Raus Sample</title>
 </head>
 <body>
-<div id="stage"></div>
-<script src="raus-ext-fastopt.js"></script>
+<div id="content"></div>
+<script src="raus-react-jsdeps.js"></script>
+<script src="raus-react-fastopt.js"></script>
 <script>
-var key = "myTasks";
-var raus = com.yuiwai.Raus.withLocalStorage();
-var stage = document.getElementById("stage");
-var listView = (p) => {
-    p.innerHTML = "";
-    raus.tasks().forEach((task) => {
-        var elm = document.createElement("div");
-        var chk = document.createElement("input");
-        var spn = document.createElement("span");
-        spn.innerText = task.title;
-        chk.type = "checkbox";
-        chk.value = task.id;
-        chk.style.verticalAlign = "middle";
-        chk.onclick = () => {
-            raus.doneTask(chk.value);
-            listView(p);
-        }
-        elm.appendChild(chk)
-        elm.appendChild(spn);
-        p.appendChild(elm);
-    });
-    var frm = document.createElement("div");
-    p.appendChild(frm);
-    inputForm(frm);
-};
-var inputForm = (p) => {
-    p.innerHTML = "";
-    var inpt = document.createElement("input");
-    var btn = document.createElement("button");
-    btn.innerText = "add";
-    btn.onclick = () => {
-        var v = inpt.value;
-        if (!v) return;
-        raus.addTask(v);
-        listView(stage);
-    };
-    p.appendChild(inpt);
-    p.appendChild(btn);
-};
-window.onload = function() {
-    raus.load(key);
-    listView(stage);
-}
-window.onunload = function() {
-    raus.save(key);
-}
+raus.RausComponent.apply("content", raus.Raus.withLocalStorage(), "my-tasks");
 </script>
 </body>
 </html>
