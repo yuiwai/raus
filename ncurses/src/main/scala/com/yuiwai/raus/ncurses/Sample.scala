@@ -7,6 +7,9 @@ object Sample {
   def main(args: Array[String]): Unit = {
 
     val screen: Ptr[Window] = initscr()
+    val win = newwin(10, 10, 1, 1)
+    start_color()
+    cbreak()
     noecho()
     loop()
     endwin()
@@ -24,7 +27,10 @@ object Sample {
 object Ncurses {
   type Window = CStruct0
   def initscr(): Ptr[Window] = extern
+  def newwin(nlines: CInt, ncols: CInt, beginY: CInt, beginX: CInt): Ptr[Window] = extern
   def endwin(): CInt = extern
+  def start_color(): CInt = extern
+  def cbreak(): CInt = extern
   def noecho(): CInt = extern
   def getch: CInt = extern
 }
