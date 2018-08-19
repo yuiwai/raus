@@ -28,7 +28,8 @@ lazy val coreJVM = core.jvm
 
 lazy val ext = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Full) in file("ext"))
   .settings(
-    name := "raus-ext"
+    name := "raus-ext",
+    publishTo := Some(Resolver.file("file", new File("release")))
   )
   .jvmSettings(
     libraryDependencies ++= Seq(
