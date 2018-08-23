@@ -1,6 +1,6 @@
 import sbtcrossproject.{crossProject, CrossType}
 
-version in ThisBuild := "0.3.0"
+version in ThisBuild := "0.3.1"
 organization in ThisBuild := "com.yuiwai"
 scalaVersion in ThisBuild := "2.12.6"
 scalacOptions in ThisBuild ++= Seq(
