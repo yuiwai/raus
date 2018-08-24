@@ -28,7 +28,8 @@ lazy val coreJVM = core.jvm
 
 lazy val ext = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Full) in file("ext"))
   .settings(
-    name := "raus-ext"
+    name := "raus-ext",
+    publishTo := Some(Resolver.file("file", new File("release")))
   )
   .jvmSettings(
     libraryDependencies ++= Seq(
@@ -71,13 +72,11 @@ lazy val react = (project in file("react"))
         / "umd/react.development.js"
         minified "umd/react.production.min.js"
         commonJSName "React",
-
       "org.webjars.npm" % "react-dom" % "16.2.0"
         / "umd/react-dom.development.js"
         minified "umd/react-dom.production.min.js"
         dependsOn "umd/react.development.js"
         commonJSName "ReactDOM",
-
       "org.webjars.npm" % "react-dom" % "16.2.0"
         / "umd/react-dom-server.browser.development.js"
         minified "umd/react-dom-server.browser.production.min.js"
