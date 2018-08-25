@@ -39,7 +39,8 @@ lazy val ext = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Full) 
   )
   .jsSettings(
     libraryDependencies ++= Seq(
-      "org.scala-js" %%% "scalajs-dom" % "0.9.2"
+      "org.scala-js" %%% "scalajs-dom" % "0.9.2",
+      "org.scala-js" %%% "scalajs-java-time" % "0.2.5"
     )
   )
 lazy val extJS = ext.js.dependsOn(coreJS)
