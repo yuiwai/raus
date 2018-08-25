@@ -34,6 +34,7 @@ trait Raus extends Persistence with RausLike[Raus] {
 }
 
 trait AsyncRaus extends AsyncPersistence with AsyncRausLike {
+  def tasks: Iterable[Task] = user.tasks.values
   override def load(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus.this.type] = {
     asyncUpdate(user => loadUser(key).recover { case _ => user })
   }

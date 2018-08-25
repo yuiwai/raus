@@ -2,7 +2,7 @@ package com.yuiwai.raus.ext
 
 import java.util.UUID
 
-import com.yuiwai.raus.model.{Date, Task, User}
+import com.yuiwai.raus.model.{Date, User}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,7 +39,6 @@ trait AsyncRausLike extends RausLikeOps {
 trait RausLikeOps {
   protected var user: User
   protected def update(f: User => User): this.type
-  def tasks: Iterable[Task] = user.tasks.values
   def addTask(title: String): this.type = {
     update(_.addTask(title))
     this

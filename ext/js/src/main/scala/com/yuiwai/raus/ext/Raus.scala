@@ -52,19 +52,19 @@ trait AsyncRaus extends AsyncPersistence with AsyncRausLike {
 
   import js.JSConverters._
 
-  override def load(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus] = {
+  override def load(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus.this.type] = {
     asyncUpdate(user => loadUser(key).recover { case _ => user })
   }
-  override def save(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus] = {
+  override def save(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus.this.type] = {
     saveUser(key, user).map(_ => this)
   }
 
   @JSExport
-  override def tasks(): js.Array[JsTask] = user.tasks.values.map(toJsTask).toJSArray
+  def tasks(): js.Array[JsTask] = user.tasks.values.map(toJsTask).toJSArray
 
   @JSExport
-  override def addTask(title: String): AsyncRaus = update(_.addTask(title))
+  override def addTask(title: String): AsyncRaus.this.type = update(_.addTask(title))
 
   @JSExport
-  override def doneTask(id: String): AsyncRaus = update(_.doneTask(UUID.fromString(id)))
+  override def doneTask(id: String): AsyncRaus.this.type = update(_.doneTask(UUID.fromString(id)))
 }
