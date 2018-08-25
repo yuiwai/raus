@@ -2,7 +2,7 @@ package com.yuiwai.raus.infrastructure
 
 import com.yuiwai.raus.model.User
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait Persistence {
   protected val storage: PersistentStorage
@@ -31,4 +31,13 @@ trait AsyncPersistence {
 trait AsyncPersistentStorage {
   def load(key: String): Future[User]
   def save(key: String, user: User): Future[Unit]
+}
+trait AsyncInMemoryStorage extends AsyncPersistentStorage with Serializer {
+  implicit val ec: ExecutionContext
+  private var db: Map[String, String] = Map.empty
+  override def load(key: String): Future[User] = Future(db.get(key).map(deserialize).get)
+  override def save(key: String, user: User): Future[Unit] = {
+    db = db.updated(key, serialize(user))
+    Future.successful(())
+  }
 }

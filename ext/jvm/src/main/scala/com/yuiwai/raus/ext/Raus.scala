@@ -2,8 +2,10 @@ package com.yuiwai.raus.ext
 
 import java.util.UUID
 
-import com.yuiwai.raus.infrastructure.{Persistence, PersistentStorage}
+import com.yuiwai.raus.infrastructure.{AsyncPersistence, Persistence, PersistentStorage}
 import com.yuiwai.raus.model.Task
+
+import scala.concurrent.{ExecutionContext, Future}
 
 object Raus {
   def withFileStorage(): Raus = new Raus {
@@ -28,5 +30,14 @@ trait Raus extends Persistence with RausLike[Raus] {
   def doneTask(id: String): Raus = {
     update(_.doneTask(UUID.fromString(id)))
     this
+  }
+}
+
+trait AsyncRaus extends AsyncPersistence with AsyncRausLike {
+  override def load(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus.this.type] = {
+    asyncUpdate(user => loadUser(key).recover { case _ => user })
+  }
+  override def save(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus.this.type] = {
+    saveUser(key, user).map(_ => this)
   }
 }
