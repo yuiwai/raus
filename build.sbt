@@ -80,6 +80,7 @@ lazy val checkJs = (project in file("check-js"))
   .settings(
     name := "raus-check-js"
   )
+  .enablePlugins(ScalaJSPlugin)
   .dependsOn(extJS)
 
 lazy val react = (project in file("react"))
