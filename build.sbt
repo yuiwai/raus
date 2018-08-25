@@ -63,6 +63,24 @@ lazy val `example-cli` = (project in file("example-cli"))
   )
   .dependsOn(cli)
 
+lazy val check = (project in file("check"))
+  .settings(
+    name := "raus-check"
+  )
+  .dependsOn(extJVM)
+
+lazy val checkJvm = (project in file("check-jvm"))
+  .settings(
+    name := "raus-check-jvm"
+  )
+  .dependsOn(extJVM)
+
+lazy val checkJs = (project in file("check-js"))
+  .settings(
+    name := "raus-check-js"
+  )
+  .dependsOn(extJS)
+
 lazy val react = (project in file("react"))
   .settings(
     name := "raus-react",

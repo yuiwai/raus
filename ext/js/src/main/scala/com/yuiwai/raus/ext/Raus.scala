@@ -47,15 +47,15 @@ trait Raus extends Persistence with RausLike[Raus] {
   def doneTask(id: String): Unit = update(_.doneTask(UUID.fromString(id)))
 }
 
-trait AsyncRaus extends AsyncPersistence with AsyncRausLike[AsyncRaus] {
+trait AsyncRaus extends AsyncPersistence with AsyncRausLike {
   import JsTask._
 
   import js.JSConverters._
 
-  override def load(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus] = {
+  override def load(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus.this.type] = {
     asyncUpdate(user => loadUser(key).recover { case _ => user })
   }
-  override def save(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus] = {
+  override def save(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus.this.type] = {
     saveUser(key, user).map(_ => this)
   }
 
@@ -63,8 +63,8 @@ trait AsyncRaus extends AsyncPersistence with AsyncRausLike[AsyncRaus] {
   def tasks(): js.Array[JsTask] = user.tasks.values.map(toJsTask).toJSArray
 
   @JSExport
-  def addTask(title: String): Unit = update(_.addTask(title))
+  override def addTask(title: String): AsyncRaus.this.type = update(_.addTask(title))
 
   @JSExport
-  def doneTask(id: String): Unit = update(_.doneTask(UUID.fromString(id)))
+  override def doneTask(id: String): AsyncRaus.this.type = update(_.doneTask(UUID.fromString(id)))
 }
