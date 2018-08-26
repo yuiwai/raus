@@ -1,11 +1,8 @@
 package com.yuiwai.raus.ext
 
-import java.util.UUID
-
 import com.yuiwai.raus.infrastructure._
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 
 @JSExportTopLevel("raus.Raus")
@@ -20,51 +17,22 @@ object Raus {
   }
 }
 
-trait Raus extends Persistence with RausLike[Raus] {
-  import JsTask._
-
-  import js.JSConverters._
-
-  @JSExport
-  def load(key: String): Raus = {
+trait Raus extends Persistence with RausLike {
+  override def load(key: String): Raus.this.type = {
     update(user => loadUser(key).getOrElse(user))
     this
   }
-
-  @JSExport
-  def save(key: String): Raus = {
+  override def save(key: String): Raus.this.type = {
     saveUser(key, user)
     this
   }
-
-  @JSExport
-  def tasks(): js.Array[JsTask] = user.tasks.values.map(toJsTask).toJSArray
-
-  @JSExport
-  def addTask(title: String): Unit = update(_.addTask(title))
-
-  @JSExport
-  def doneTask(id: String): Unit = update(_.doneTask(UUID.fromString(id)))
 }
 
 trait AsyncRaus extends AsyncPersistence with AsyncRausLike {
-  import JsTask._
-
-  import js.JSConverters._
-
   override def load(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus.this.type] = {
     asyncUpdate(user => loadUser(key).recover { case _ => user })
   }
   override def save(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus.this.type] = {
     saveUser(key, user).map(_ => this)
   }
-
-  @JSExport
-  def tasks(): js.Array[JsTask] = user.tasks.values.map(toJsTask).toJSArray
-
-  @JSExport
-  override def addTask(title: String): AsyncRaus.this.type = update(_.addTask(title))
-
-  @JSExport
-  override def doneTask(id: String): AsyncRaus.this.type = update(_.doneTask(UUID.fromString(id)))
 }

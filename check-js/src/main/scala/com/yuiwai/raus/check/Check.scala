@@ -20,7 +20,7 @@ object Check {
     val key = "myTasks"
     asyncRaus.load(key).foreach { r =>
       assert(r.isInstanceOf[AsyncRaus])
-      assert(r.tasks().isEmpty)
+      assert(r.tasks.isEmpty)
     }
   }
 }

@@ -55,7 +55,7 @@ object RausComponent {
             "save"
           )
         ),
-        s.raus.tasks().map(task => <.div(task.title)).toTagMod
+        s.raus.tasks.map(task => <.div(task.title)).toTagMod
       )
   }
 }
