@@ -2,6 +2,7 @@ package com.yuiwai.raus.ext
 
 import java.util.UUID
 
+import com.yuiwai.raus.infrastructure.DateBridge
 import com.yuiwai.raus.model.{Date, Task, User}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -27,6 +28,7 @@ trait AsyncRausLike extends RausLikeOps {
 }
 
 trait RausLikeOps {
+  implicit val dateBridge: DateBridge
   protected var user: User
   protected def update(f: User => User): this.type = {
     user = f(user)
