@@ -5,10 +5,12 @@ import com.yuiwai.raus.infrastructure.{AsyncInMemoryStorage, AsyncPersistentStor
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.scalajs.js._
+import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 
+@JSExportTopLevel("com.yuiwai.raus.check.Check")
 object Check {
-  def main(args: Array[String]): Unit = {
+  @JSExport
+  def main(): Unit = {
     val asyncRaus = new AsyncRaus {
       override protected val storage: AsyncPersistentStorage =
         new AsyncInMemoryStorage with JsonSerializer {

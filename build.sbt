@@ -1,4 +1,4 @@
-import sbtcrossproject.{crossProject, CrossType}
+import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 version in ThisBuild := "0.4.0-SNAPSHOT"
 organization in ThisBuild := "com.yuiwai"
@@ -64,12 +64,6 @@ lazy val `example-cli` = (project in file("example-cli"))
   )
   .dependsOn(cli)
 
-lazy val check = (project in file("check"))
-  .settings(
-    name := "raus-check"
-  )
-  .dependsOn(extJVM)
-
 lazy val checkJvm = (project in file("check-jvm"))
   .settings(
     name := "raus-check-jvm"
@@ -78,7 +72,9 @@ lazy val checkJvm = (project in file("check-jvm"))
 
 lazy val checkJs = (project in file("check-js"))
   .settings(
-    name := "raus-check-js"
+    name := "raus-check-js",
+    scalaJSUseMainModuleInitializer := true,
+    mainClass in Compile := Some("com.yuiwai.raus.check.Check")
   )
   .enablePlugins(ScalaJSPlugin)
   .dependsOn(extJS)
