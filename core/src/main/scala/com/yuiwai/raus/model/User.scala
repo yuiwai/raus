@@ -1,6 +1,5 @@
 package com.yuiwai.raus.model
 
-import java.time.LocalDate
 import java.util.UUID
 
 case class User(
@@ -15,7 +14,7 @@ case class User(
 ) {
   def task: Option[Task] = tasks.headOption.map(_._2)
   def expired: Seq[Task] = tasks.values.filter(_.isExpired).toSeq
-  def expired(now: LocalDate): Seq[Task] = tasks.values.filter(_.isExpired(now)).toSeq
+  def expired(now: Date): Seq[Task] = tasks.values.filter(_.isExpired(now)).toSeq
   def addTask(title: String): User = addTask(TaskState(title))
   def addTask(title: String, deadline: Date): User = addTask(TaskState(title, deadline))
   def addTask(task: TaskState): User = {

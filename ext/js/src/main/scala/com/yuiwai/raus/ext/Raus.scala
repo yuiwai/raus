@@ -8,11 +8,11 @@ import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 @JSExportTopLevel("raus.Raus")
 object Raus {
   @JSExport
-  def withInMemoryStorage(): Raus = new Raus {
+  def withInMemoryStorage(): Raus = new Raus with DateBridgeModule {
     override protected val storage: PersistentStorage = new InMemoryStorage with JsonSerializer
   }
   @JSExport
-  def withLocalStorage(): Raus = new Raus {
+  def withLocalStorage(): Raus = new Raus with DateBridgeModule {
     override protected val storage: PersistentStorage = new LocalStorage with JsonSerializer
   }
 }

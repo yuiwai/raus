@@ -1,11 +1,11 @@
 package com.yuiwai.raus.ext
 
-import com.yuiwai.raus.infrastructure.{AsyncPersistence, Persistence, PersistentStorage}
+import com.yuiwai.raus.infrastructure.{AsyncPersistence, DateBridgeModule, Persistence, PersistentStorage}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 object Raus {
-  def withFileStorage(): Raus = new Raus {
+  def withFileStorage(): Raus = new Raus with DateBridgeModule {
     override protected val storage: PersistentStorage = new FileStorage with JacksonSerializer
   }
 }
