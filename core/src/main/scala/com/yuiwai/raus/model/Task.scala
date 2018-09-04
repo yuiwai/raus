@@ -4,6 +4,7 @@ import java.util.UUID
 
 case class Task(id: UUID, state: TaskState, status: Status) {
   def title: String = state.title
+  def groupName: String = state.group.name
   def isExpired: Boolean = state.deadline.exists(_.isExpired)
   def isExpired(now: Date): Boolean = state.deadline.exists(_.isExpired(now))
 }
