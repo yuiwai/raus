@@ -27,10 +27,11 @@ object Check {
     }
     checkSerialization()
   }
-  def checkSerialization(): Unit = {
+  def checkSerialization(): Unit = new JsonSerializer {
     import com.yuiwai.raus.ext.JsUser._
     val user = User()
       .addGroup("test group")
     assert(fromJsUser(toJsUser(user)) == user)
+    assert(deserialize("""{"tasks": {}}""").isInstanceOf[User])
   }
 }

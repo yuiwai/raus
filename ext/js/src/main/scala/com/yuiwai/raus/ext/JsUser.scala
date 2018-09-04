@@ -12,15 +12,17 @@ trait JsUser extends js.Object {
   val groups: js.Array[JsGroup] = js.native
 }
 object JsUser {
-  import JsTask._
   import JsGroup._
+  import JsTask._
+
   import js.JSConverters._
+  def undefOr[A, B](elem: A)(f: A => B, default: => B): B = if (js.isUndefined(elem)) default else f(elem)
   def fromJsUser(jsUser: JsUser): User =
     User().copy(
-      tasks = jsUser.tasks.map { t =>
+      tasks = undefOr(jsUser.tasks)(_.map { t =>
         UUID.fromString(t._1) -> fromJsTask(t._2)
-      }.toMap,
-      groups = jsUser.groups.map(fromJsGroup).toSet
+      }.toMap, Map.empty),
+      groups = undefOr(jsUser.groups)(_.map(fromJsGroup).toSet, Set.empty)
     )
   def toJsUser(user: User): JsUser =
     js.Dynamic.literal(
