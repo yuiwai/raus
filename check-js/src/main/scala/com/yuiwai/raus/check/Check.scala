@@ -2,6 +2,7 @@ package com.yuiwai.raus.check
 
 import com.yuiwai.raus.ext.{AsyncRaus, JsonSerializer}
 import com.yuiwai.raus.infrastructure.{AsyncInMemoryStorage, AsyncPersistentStorage, DateBridgeModule}
+import com.yuiwai.raus.model.User
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,5 +25,12 @@ object Check {
       val tasks = r.addTaskByToday("task1").tasks
       assert(tasks.size == 1)
     }
+    checkSerialization()
+  }
+  def checkSerialization(): Unit = {
+    import com.yuiwai.raus.ext.JsUser._
+    val user = User()
+      .addGroup("test group")
+    assert(fromJsUser(toJsUser(user)) == user)
   }
 }
