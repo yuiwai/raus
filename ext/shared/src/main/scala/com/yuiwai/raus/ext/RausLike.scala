@@ -3,7 +3,7 @@ package com.yuiwai.raus.ext
 import java.util.UUID
 
 import com.yuiwai.raus.infrastructure.DateBridge
-import com.yuiwai.raus.model.{Date, Task, User}
+import com.yuiwai.raus.model.{Date, Group, Task, User}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,6 +35,7 @@ trait RausLikeOps {
     this
   }
   def tasks: Iterable[Task] = user.tasks.values
+  def groups: Set[Group] = user.groups
   def addTask(title: String): this.type = {
     update(_.addTask(title))
     this
@@ -45,4 +46,5 @@ trait RausLikeOps {
   }
   def addTaskByToday(title: String): this.type = update(_.addTask(title, Date.today))
   def addTaskByTomorrow(title: String): this.type = update(_.addTask(title, Date.tomorrow))
+  def addGroup(name: String): this.type = update(_.addGroup(Group(name)))
 }
