@@ -47,4 +47,5 @@ trait RausLikeOps {
   def addTaskByToday(title: String): this.type = update(_.addTask(title, Date.today))
   def addTaskByTomorrow(title: String): this.type = update(_.addTask(title, Date.tomorrow))
   def addGroup(name: String): this.type = update(_.addGroup(Group(name)))
+  def setGroup(id: String, name: String): this.type = update(_.setGroup(id, Group(name)))
 }

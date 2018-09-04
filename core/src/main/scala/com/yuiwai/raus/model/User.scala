@@ -24,6 +24,12 @@ case class User(
   def doneTask(id: UUID): User = copy(tasks = tasks - id, deletedTasks = deletedTasks + id)
   def addGroup(name: String): User = addGroup(Group(name))
   def addGroup(group: Group): User = copy(groups = groups + group)
+  def setGroup(id: String, group: Group): User = setGroup(UUID.fromString(id), group)
+  def setGroup(id: UUID, group: Group): User = {
+    require(tasks.exists(_._1 == id))
+    val task = tasks(id)
+    copy(tasks = tasks.updated(id, task.copy(id, task.state.copy(group = group), Modified)), groups = groups + group)
+  }
 }
 object User {
   def apply(): User = new User(Map.empty, Set.empty, Set.empty, Set.empty, Set.empty, Set.empty, Set.empty, Set.empty)
