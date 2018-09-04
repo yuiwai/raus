@@ -22,6 +22,8 @@ case class User(
     copy(tasks = tasks.updated(id, Task(id, task, Added)), groups = groups + task.group)
   }
   def doneTask(id: UUID): User = copy(tasks = tasks - id, deletedTasks = deletedTasks + id)
+  def addGroup(name: String): User = addGroup(Group(name))
+  def addGroup(group: Group): User = copy(groups = groups + group)
 }
 object User {
   def apply(): User = new User(Map.empty, Set.empty, Set.empty, Set.empty, Set.empty, Set.empty, Set.empty, Set.empty)
