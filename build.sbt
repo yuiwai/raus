@@ -26,6 +26,18 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Pure)
 lazy val coreJS = core.js
 lazy val coreJVM = core.jvm
 
+lazy val protobuf = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Pure) in file("protobuf"))
+  .settings(
+    name := "raus-protobuf",
+    PB.targets in Compile := Seq(
+      scalapb.gen() -> (sourceManaged in Compile).value
+    ),
+    PB.protoSources in Compile := Seq(file("protobuf/src/main/protobuf"))
+  )
+  .dependsOn(core)
+lazy val protobufJS = protobuf.js
+lazy val protobufJVM = protobuf.jvm
+
 lazy val ext = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Full) in file("ext"))
   .settings(
     name := "raus-ext",

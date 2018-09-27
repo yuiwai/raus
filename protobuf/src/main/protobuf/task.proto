@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+import "date.proto";
+
+package raus;
+
+message Task {
+    string id = 1;
+    TaskState state = 2;
+}
+
+message TaskState {
+    string title = 1;
+    Date deadline = 2;
+    string group = 3;
+}
