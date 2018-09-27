@@ -13,14 +13,14 @@ trait PersistentStorage {
   def load(key: String): Option[User]
   def save(key: String, user: User): Unit
 }
-trait InMemoryStorage extends PersistentStorage with Serializer {
+trait InMemoryStorage extends PersistentStorage with Serializer[String] {
   private var db: Map[String, String] = Map.empty
   override def load(key: String): Option[User] = db.get(key).map(deserialize)
   override def save(key: String, user: User): Unit = db = db.updated(key, serialize(user))
 }
-trait Serializer {
-  protected def serialize(user: User): String
-  protected def deserialize(data: String): User
+trait Serializer[T] {
+  protected def serialize(user: User): T
+  protected def deserialize(data: T): User
 }
 
 trait AsyncPersistence {
@@ -32,7 +32,7 @@ trait AsyncPersistentStorage {
   def load(key: String): Future[User]
   def save(key: String, user: User): Future[Unit]
 }
-trait AsyncInMemoryStorage extends AsyncPersistentStorage with Serializer {
+trait AsyncInMemoryStorage extends AsyncPersistentStorage with Serializer[String] {
   implicit val ec: ExecutionContext
   private var db: Map[String, String] = Map.empty
   override def load(key: String): Future[User] = Future(db.get(key).map(deserialize).get)

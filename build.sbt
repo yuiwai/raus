@@ -1,4 +1,4 @@
-import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
+import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
 version in ThisBuild := "0.4.0-SNAPSHOT"
 organization in ThisBuild := "com.yuiwai"
@@ -32,7 +32,17 @@ lazy val protobuf = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.P
     PB.targets in Compile := Seq(
       scalapb.gen() -> (sourceManaged in Compile).value
     ),
-    PB.protoSources in Compile := Seq(file("protobuf/src/main/protobuf"))
+    PB.protoSources in Compile := Seq(file("protobuf/src/main/protobuf")),
+    testFrameworks += new TestFramework("utest.runner.Framework")
+  )
+  .jvmSettings(
+    libraryDependencies += "com.lihaoyi" %% "utest" % "0.6.5" % "test"
+  )
+  .jsSettings(
+    libraryDependencies ++= Seq(
+      "com.thesamet.scalapb" %%% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion,
+      "com.lihaoyi" %%% "utest" % "0.6.5" % "test"
+    )
   )
   .dependsOn(core)
 lazy val protobufJS = protobuf.js

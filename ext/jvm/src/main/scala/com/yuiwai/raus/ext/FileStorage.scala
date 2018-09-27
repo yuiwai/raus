@@ -4,7 +4,7 @@ import better.files.File
 import com.yuiwai.raus.infrastructure.{PersistentStorage, Serializer}
 import com.yuiwai.raus.model.User
 
-trait FileStorage extends PersistentStorage with Serializer {
+trait FileStorage extends PersistentStorage with Serializer[String] {
   // FIXME ファイル名をどうするか
   private val fileName = "raus.db"
   override def load(key: String): Option[User] = {
