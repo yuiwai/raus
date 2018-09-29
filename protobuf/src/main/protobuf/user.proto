@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-import "task.proto";
-
-package raus;
-
-message User {
-    repeated Task tasks = 1;
-}

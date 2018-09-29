@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package raus;
+
+message User {
+    message Task {
+        string id = 1;
+        TaskState state = 2;
+    }
+    message TaskState {
+        message Date {
+            int32 year = 1;
+            int32 month = 2;
+            int32 day = 3;
+        }
+        string title = 1;
+        Date deadline = 2;
+        string group = 3;
+    }
+    repeated Task tasks = 1;
+}
