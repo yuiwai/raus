@@ -17,5 +17,9 @@ message User {
         Date deadline = 2;
         string group = 3;
     }
+    message Group {
+        string name = 1;
+    }
     repeated Task tasks = 1;
+    repeated Group groups = 2;
 }

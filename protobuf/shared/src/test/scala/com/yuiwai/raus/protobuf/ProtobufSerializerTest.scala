@@ -4,13 +4,17 @@ import com.yuiwai.raus.model.User
 import utest._
 
 object ProtobufSerializerTest extends TestSuite {
-  class Serializer extends ProtobufSerializer {
-    def fromUser(user: User): Array[Byte]= serialize(user)
+  object Serializer extends ProtobufSerializer {
+    def fromUser(user: User): Array[Byte] = serialize(user)
     def toUser(bytes: Array[Byte]): User = deserialize(bytes)
   }
   val tests = Tests {
     "serialize" - {
-      new Serializer().fromUser(User())
+      val user = User()
+        .addGroup("group1")
+        .addTask("task1")
+      println(Serializer.toUser(Serializer.fromUser(user)))
+      assert(user == Serializer.toUser(Serializer.fromUser(user)))
     }
   }
 }
