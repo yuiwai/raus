@@ -25,7 +25,7 @@ trait ProtobufSerializer extends Serializer[Array[Byte]] {
         val task = pTask.asTask
         task.id -> task
       }.toMap,
-      pUser.groups.toSet.map(pGroup => Group(pGroup.name)),
+      pUser.groups.map(pGroup => Group(pGroup.name)).toSet,
       Set.empty,
       Set.empty,
       Set.empty,

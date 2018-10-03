@@ -13,7 +13,6 @@ object ProtobufSerializerTest extends TestSuite {
       val user = User()
         .addGroup("group1")
         .addTask("task1")
-      println(Serializer.toUser(Serializer.fromUser(user)))
       assert(user == Serializer.toUser(Serializer.fromUser(user)))
     }
   }
