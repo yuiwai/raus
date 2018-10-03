@@ -6,7 +6,7 @@ import org.scalajs.dom
 
 import scala.util.Try
 
-trait LocalStorage extends PersistentStorage with Serializer {
+trait LocalStorage extends PersistentStorage with Serializer[String] {
   private val localStorage = dom.window.localStorage
   override def load(key: String): Option[User] = Try(localStorage.getItem(key)).map(deserialize).toOption
   override def save(key: String, user: User): Unit = localStorage.setItem(key, serialize(user))

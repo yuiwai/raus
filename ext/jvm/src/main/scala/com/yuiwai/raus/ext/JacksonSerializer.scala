@@ -5,7 +5,7 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.yuiwai.raus.infrastructure.{Mapper, Serializer}
 import com.yuiwai.raus.model._
 
-trait JacksonSerializer extends Serializer {
+trait JacksonSerializer extends Serializer[String] {
   private val mapper = new ObjectMapper()
   mapper.registerModule(DefaultScalaModule)
   override protected def serialize(user: User): String = {
