@@ -11,7 +11,7 @@ scalacOptions in ThisBuild ++= Seq(
 )
 
 lazy val root = project.in(file("."))
-  .aggregate(coreJS, coreJVM, extJS, extJVM)
+  .aggregate(coreJS, coreJVM, extJS, extJVM, protobufJS, protobufJVM)
   .settings(
     name := "raus",
     publish := {},
@@ -33,6 +33,7 @@ lazy val protobuf = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.F
       scalapb.gen() -> (sourceManaged in Compile).value
     ),
     PB.protoSources in Compile := Seq((baseDirectory in ThisBuild).value / "protobuf/shared/main/protobuf"),
+    publishTo := Some(Resolver.file("file", new File("release"))),
     testFrameworks += new TestFramework("utest.runner.Framework")
   )
   .jvmSettings(
