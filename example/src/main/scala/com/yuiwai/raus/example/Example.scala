@@ -2,9 +2,10 @@ package com.yuiwai.raus.example
 
 import java.time.LocalDate
 
+import com.yuiwai.raus.infrastructure.DateBridgeModule
 import com.yuiwai.raus.model.{Date, User}
 
-object Example extends App with Fixtures {
+object Example extends App with Fixtures with DateBridgeModule {
   empty()
   addTask()
   addTaskWithDeadline()
@@ -28,13 +29,14 @@ object Example extends App with Fixtures {
     assert(task.title == title)
   }
   def addTaskWithDeadline(): Unit = {
+    import com.yuiwai.raus.infrastructure.DateBridge._
     val title = "test"
     val user = User()
       .addTask(title, Date.today)
       .addTask(title, Date.tomorrow)
     assert(user.expired.isEmpty)
-    assert(user.expired(LocalDate.now().plusDays(1)).size == 1)
-    assert(user.expired(LocalDate.now().plusDays(2)).size == 2)
+    assert(user.expired(LocalDate.now().plusDays(1).toDate).size == 1)
+    assert(user.expired(LocalDate.now().plusDays(2).toDate).size == 2)
   }
 
   def doneTask(): Unit = new OneTaskAdded {

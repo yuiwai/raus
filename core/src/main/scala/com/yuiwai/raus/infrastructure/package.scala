@@ -1,5 +1,5 @@
 package com.yuiwai.raus
 
 package object infrastructure {
-    type Id[T] = T
+  type Id[T] = T
 }
