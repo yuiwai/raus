@@ -21,7 +21,11 @@ lazy val root = project.in(file("."))
 lazy val core = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Pure) in file("core"))
   .settings(
     name := "raus-core",
-    publishTo := Some(Resolver.file("file", new File("release")))
+    publishTo := Some(Resolver.file("file", new File("release"))),
+    testFrameworks += new TestFramework("utest.runner.Framework")
+  )
+  .jvmSettings(
+    libraryDependencies += "com.lihaoyi" %% "utest" % "0.6.5" % "test"
   )
 lazy val coreJS = core.js
 lazy val coreJVM = core.jvm
