@@ -27,6 +27,9 @@ lazy val core = (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Pure)
   .jvmSettings(
     libraryDependencies += "com.lihaoyi" %% "utest" % "0.6.5" % "test"
   )
+  .jsSettings(
+    libraryDependencies += "com.lihaoyi" %%% "utest" % "0.6.5" % "test"
+  )
 lazy val coreJS = core.js
 lazy val coreJVM = core.jvm
 
