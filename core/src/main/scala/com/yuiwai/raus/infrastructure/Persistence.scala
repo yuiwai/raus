@@ -2,42 +2,59 @@ package com.yuiwai.raus.infrastructure
 
 import com.yuiwai.raus.model.User
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
+import scala.language.higherKinds
 
-trait Persistence {
-  protected val storage: PersistentStorage
-  protected def loadUser(key: String): Option[User] = storage.load(key)
-  protected def saveUser(key: String, user: User): Unit = storage.save(key, user)
+trait Persistence[R[_]] {
+  type Storage = PersistentStorage[R]
+  protected def loadUser(key: String)(implicit storage: Storage): R[Option[User]] = storage.load(key)
+  protected def saveUser(key: String, user: User)(implicit storage: Storage): R[Unit] = storage.save(key, user)
 }
-trait PersistentStorage {
-  def load(key: String): Option[User]
-  def save(key: String, user: User): Unit
+trait PersistentStorage[R[_]] {
+  def load(key: String): R[Option[User]]
+  def save(key: String, user: User): R[Unit]
 }
-trait InMemoryStorage extends PersistentStorage with Serializer[String] {
-  private var db: Map[String, String] = Map.empty
+trait InMemoryStorage[T] extends PersistentStorage[Id] with Serializer[T] {
+  private var db: Map[String, T] = Map.empty
   override def load(key: String): Option[User] = db.get(key).map(deserialize)
   override def save(key: String, user: User): Unit = db = db.updated(key, serialize(user))
+}
+trait AsyncInMemoryStorage[T] extends PersistentStorage[Future] with Serializer[T] {
+  import scala.concurrent.ExecutionContext.Implicits.global
+  private var db: Map[String, T] = Map.empty
+  override def load(key: String): Future[Option[User]] = Future(db.get(key).map(deserialize))
+  override def save(key: String, user: User): Future[Unit] = Future {
+    db = db.updated(key, serialize(user))
+  }
 }
 trait Serializer[T] {
   protected def serialize(user: User): T
   protected def deserialize(data: T): User
 }
 
-trait AsyncPersistence {
-  protected val storage: AsyncPersistentStorage
-  protected def loadUser(key: String): Future[User] = storage.load(key)
-  protected def saveUser(key: String, user: User): Future[Unit] = storage.save(key, user)
+sealed trait FanoutStorage[H <: PersistentStorage[Future], T <: FanoutStorage[_, _]] extends PersistentStorage[Future] {
+  def length: Int
+  def ::[A <: PersistentStorage[Future]](that: A): FanoutStorage[A, this.type] = NonEmptyFanoutStorage(that, this)
 }
-trait AsyncPersistentStorage {
-  def load(key: String): Future[User]
-  def save(key: String, user: User): Future[Unit]
+
+case class NonEmptyFanoutStorage[H <: PersistentStorage[Future], T <: FanoutStorage[_, _]](head: H, tail: T)
+  extends FanoutStorage[H, T] {
+  // FIXME コンテキストの受け渡し
+  import scala.concurrent.ExecutionContext.Implicits.global
+  override def length: Int = tail.length + 1
+  // FIXME loadは分離したい
+  override def load(key: String): Future[Option[User]] = head.load(key)
+  override def save(key: String, user: User): Future[Unit] = for {
+    _ <- head.save(key, user)
+    _ <- tail.save(key, user)
+  } yield ()
+
 }
-trait AsyncInMemoryStorage extends AsyncPersistentStorage with Serializer[String] {
-  implicit val ec: ExecutionContext
-  private var db: Map[String, String] = Map.empty
-  override def load(key: String): Future[User] = Future(db.get(key).map(deserialize).get)
-  override def save(key: String, user: User): Future[Unit] = {
-    db = db.updated(key, serialize(user))
-    Future.successful(())
-  }
+
+case object EmptyFanoutStorage extends FanoutStorage[Nothing, Nothing] {
+  // FIXME コンテキストの受け渡し
+  import scala.concurrent.ExecutionContext.Implicits.global
+  override def length: Int = 0
+  override def load(key: String): Future[Option[User]] = Future(None)
+  override def save(key: String, user: User): Future[Unit] = Future(())
 }

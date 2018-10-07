@@ -1,6 +1,6 @@
 package com.yuiwai.raus.cli
 
-import com.yuiwai.raus.ext.Raus
+import com.yuiwai.raus.ext.{FileStorage, JacksonSerializer, Raus}
 
 trait Runner {
   val Tasks = "tasks"
@@ -15,7 +15,8 @@ trait Runner {
       case _ => help()
     }
   }
-  private def load(key: String): Raus = Raus.withFileStorage().load(key)
+  implicit val storage = new FileStorage with JacksonSerializer
+  private def load(key: String): Raus = (new Raus with DateBridgeModule).load(key)
   private def save(key: String, raus: Raus): Unit = raus.save(key)
   // TODO パラメータから取得するように
   def key(opts: List[String]): String = "myTask"

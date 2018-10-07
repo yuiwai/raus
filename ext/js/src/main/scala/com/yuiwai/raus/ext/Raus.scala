@@ -1,38 +1,27 @@
 package com.yuiwai.raus.ext
 
-import com.yuiwai.raus.infrastructure._
+import com.yuiwai.raus.infrastructure.{Id, Persistence, PersistentStorage}
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 
-@JSExportTopLevel("raus.Raus")
-object Raus {
-  @JSExport
-  def withInMemoryStorage(): Raus = new Raus with DateBridgeModule {
-    override protected val storage: PersistentStorage = new InMemoryStorage with JsonSerializer
-  }
-  @JSExport
-  def withLocalStorage(): Raus = new Raus with DateBridgeModule {
-    override protected val storage: PersistentStorage = new LocalStorage with JsonSerializer
-  }
-}
-
-trait Raus extends Persistence with RausLike {
-  override def load(key: String): Raus.this.type = {
+trait Raus extends Persistence[Id] with RausLike {
+  override def load(key: String)(implicit storage: PersistentStorage[Id]): Raus.this.type = {
     update(user => loadUser(key).getOrElse(user))
     this
   }
-  override def save(key: String): Raus.this.type = {
+  override def save(key: String)(implicit storage: PersistentStorage[Id]): Raus.this.type = {
     saveUser(key, user)
     this
   }
 }
 
-trait AsyncRaus extends AsyncPersistence with AsyncRausLike {
-  override def load(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus.this.type] = {
-    asyncUpdate(user => loadUser(key).recover { case _ => user })
+trait AsyncRaus extends Persistence[Future] with AsyncRausLike {
+  override def load(key: String)
+    (implicit storage: PersistentStorage[Future], ec: ExecutionContext): Future[AsyncRaus.this.type] = {
+    asyncUpdate(user => loadUser(key).map(_.get).recover { case _ => user })
   }
-  override def save(key: String)(implicit ec: ExecutionContext): Future[AsyncRaus.this.type] = {
+  override def save(key: String)
+    (implicit storage: PersistentStorage[Future], ec: ExecutionContext): Future[AsyncRaus.this.type] = {
     saveUser(key, user).map(_ => this)
   }
 }

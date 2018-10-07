@@ -2,15 +2,15 @@ package com.yuiwai.raus.ext
 
 import java.util.UUID
 
-import com.yuiwai.raus.infrastructure.DateBridge
+import com.yuiwai.raus.infrastructure.{DateBridge, Id, PersistentStorage}
 import com.yuiwai.raus.model.{Date, Group, Task, User}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait RausLike extends RausLikeOps {
   protected var user: User = User()
-  def load(key: String): this.type
-  def save(key: String): this.type
+  def load(key: String)(implicit storage: PersistentStorage[Id]): this.type
+  def save(key: String)(implicit storage: PersistentStorage[Id]): this.type
 }
 
 trait AsyncRausLike extends RausLikeOps {
@@ -23,8 +23,8 @@ trait AsyncRausLike extends RausLikeOps {
         this
       }
   }
-  def load(key: String)(implicit ec: ExecutionContext): Future[this.type]
-  def save(key: String)(implicit ec: ExecutionContext): Future[this.type]
+  def load(key: String)(implicit storage: PersistentStorage[Future], ec: ExecutionContext): Future[this.type]
+  def save(key: String)(implicit storage: PersistentStorage[Future], ec: ExecutionContext): Future[this.type]
 }
 
 trait RausLikeOps {

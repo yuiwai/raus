@@ -2,7 +2,6 @@ package com.yuiwai.raus.protobuf
 
 import java.util.UUID
 
-import com.yuiwai.raus.infrastructure.Serializer
 import com.yuiwai.raus.model._
 import raus.user.User.{Task => PTask, TaskState => PTaskState, Group => PGroup}
 import raus.user.{User => PUser}
