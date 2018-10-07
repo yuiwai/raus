@@ -30,7 +30,7 @@ object PersistenceTest extends TestSuite {
       var i = 0
       class TestPersistence extends Persistence[Future] {
         def save(key: String, user: User)
-          (implicit storage: PersistentStorage[Future]): Unit = storage.save(key, user)
+          (implicit storage: PersistentStorage[Future]): Future[Unit] = storage.save(key, user)
       }
       val inMemoryStorage = new AsyncInMemoryStorage[String] {
         override def save(key: String, user: User): Future[Unit] = {
@@ -41,8 +41,11 @@ object PersistenceTest extends TestSuite {
         override protected def deserialize(data: String): User = User()
       }
       implicit val storage = inMemoryStorage :: inMemoryStorage :: EmptyFanoutStorage
-      new TestPersistence().save("test", User())
-      assert(i == 2)
+      assert(storage.length == 2)
+      import scala.concurrent.ExecutionContext.Implicits.global
+      new TestPersistence().save("test", User()) foreach { _ =>
+        assert(i == 2)
+      }
     }
   }
 }
