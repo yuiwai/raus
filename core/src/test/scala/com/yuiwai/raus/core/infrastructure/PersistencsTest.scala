@@ -9,11 +9,11 @@ object PersistenceTest extends TestSuite {
     "inmemory" - {
       class TestPersistence extends Persistence[Id] {
         def save(key: String, user: User)
-        (implicit storage: PersistentStorage[Id]): Unit = saveUser(key, user)
+          (implicit storage: PersistentStorage[Id]): Unit = saveUser(key, user)
       }
       class TestAsyncPersistence extends Persistence[Future] {
         def save(key: String, user: User)
-        (implicit storage: PersistentStorage[Future]): Future[Unit] = saveUser(key, user)
+          (implicit storage: PersistentStorage[Future]): Future[Unit] = saveUser(key, user)
       }
       implicit val storage = new InMemoryStorage[String] {
         def serialize(user: User): String = "user"
@@ -27,14 +27,22 @@ object PersistenceTest extends TestSuite {
       new TestAsyncPersistence().save("test", User())
     }
     "fanout" - {
-      class TestPersistence extends Persistence[Id] {
+      var i = 0
+      class TestPersistence extends Persistence[Future] {
         def save(key: String, user: User)
-        (implicit storage: PersistentStorage[Id]): Unit = saveUser(key, user)
+          (implicit storage: PersistentStorage[Future]): Unit = storage.save(key, user)
       }
-      implicit val storage = new FanoutStorage[Id] {
-        def storages = Seq.empty
+      val inMemoryStorage = new AsyncInMemoryStorage[String] {
+        override def save(key: String, user: User): Future[Unit] = {
+          i = i + 1
+          super.save(key, user)
+        }
+        override protected def serialize(user: User): String = "user"
+        override protected def deserialize(data: String): User = User()
       }
+      implicit val storage = inMemoryStorage :: inMemoryStorage :: EmptyFanoutStorage
       new TestPersistence().save("test", User())
+      assert(i == 2)
     }
   }
 }

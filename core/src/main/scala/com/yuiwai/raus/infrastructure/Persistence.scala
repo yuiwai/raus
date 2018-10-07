@@ -32,8 +32,26 @@ trait Serializer[T] {
   protected def deserialize(data: T): User
 }
 
-trait FanoutStorage[R[_]] extends PersistentStorage[R] {
-  def storages: Seq[PersistentStorage[R]]
-  def load(key: String): R[Option[User]]
-  def save(key: String, user: User): R[Unit]
+sealed trait FanoutStorage[H <: PersistentStorage[Future], T <: FanoutStorage[_, _]] extends PersistentStorage[Future] {
+  def ::[A <: PersistentStorage[Future]](that: A): FanoutStorage[A, this.type] = NonEmptyFanoutStorage(that, this)
+}
+
+case class NonEmptyFanoutStorage[H <: PersistentStorage[Future], T <: FanoutStorage[_, _]](head: H, tail: T)
+  extends FanoutStorage[H, T] {
+  // FIXME コンテキストの受け渡し
+  import scala.concurrent.ExecutionContext.Implicits.global
+  // FIXME loadは分離したい
+  override def load(key: String): Future[Option[User]] = head.load(key)
+  override def save(key: String, user: User): Future[Unit] = for {
+    _ <- head.save(key, user)
+    _ <- tail.save(key, user)
+  } yield ()
+
+}
+
+case object EmptyFanoutStorage extends FanoutStorage[Nothing, Nothing] {
+  // FIXME コンテキストの受け渡し
+  import scala.concurrent.ExecutionContext.Implicits.global
+  override def load(key: String): Future[Option[User]] = Future(None)
+  override def save(key: String, user: User): Future[Unit] = Future(())
 }
