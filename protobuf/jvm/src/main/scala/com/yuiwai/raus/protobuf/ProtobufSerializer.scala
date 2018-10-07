@@ -2,8 +2,9 @@ package com.yuiwai.raus.protobuf
 
 import java.util.UUID
 
+import com.yuiwai.raus.infrastructure.Serializer
 import com.yuiwai.raus.model._
-import raus.user.User.{Task => PTask, TaskState => PTaskState, Group => PGroup}
+import raus.user.User.{Group => PGroup, Task => PTask, TaskState => PTaskState}
 import raus.user.{User => PUser}
 
 trait ProtobufSerializer extends Serializer[Array[Byte]] {
