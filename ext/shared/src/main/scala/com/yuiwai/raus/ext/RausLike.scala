@@ -2,7 +2,7 @@ package com.yuiwai.raus.ext
 
 import java.util.UUID
 
-import com.yuiwai.raus.infrastructure.{DateBridge, PersistentStorage, Id}
+import com.yuiwai.raus.infrastructure.{DateBridge, Id, PersistentStorage}
 import com.yuiwai.raus.model.{Date, Group, Task, User}
 
 import scala.concurrent.{ExecutionContext, Future}

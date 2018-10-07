@@ -1,7 +1,7 @@
 package com.yuiwai.raus.check
 
 import com.yuiwai.raus.ext.{AsyncRaus, JacksonSerializer}
-import com.yuiwai.raus.infrastructure._
+import com.yuiwai.raus.infrastructure.{AsyncInMemoryStorage, DateBridgeModule}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

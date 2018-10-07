@@ -1,6 +1,6 @@
 package com.yuiwai.raus.ext
 
-import com.yuiwai.raus.infrastructure._
+import com.yuiwai.raus.infrastructure.{Id, Persistence, PersistentStorage}
 
 import scala.concurrent.{ExecutionContext, Future}
 

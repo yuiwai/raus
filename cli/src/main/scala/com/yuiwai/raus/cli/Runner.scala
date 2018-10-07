@@ -1,7 +1,6 @@
 package com.yuiwai.raus.cli
 
 import com.yuiwai.raus.ext.{FileStorage, JacksonSerializer, Raus}
-import com.yuiwai.raus.infrastructure.DateBridgeModule
 
 trait Runner {
   val Tasks = "tasks"

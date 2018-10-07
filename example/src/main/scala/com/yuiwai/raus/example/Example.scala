@@ -2,7 +2,6 @@ package com.yuiwai.raus.example
 
 import java.time.LocalDate
 
-import com.yuiwai.raus.infrastructure.DateBridgeModule
 import com.yuiwai.raus.model.{Date, User}
 
 object Example extends App with Fixtures with DateBridgeModule {
@@ -29,7 +28,6 @@ object Example extends App with Fixtures with DateBridgeModule {
     assert(task.title == title)
   }
   def addTaskWithDeadline(): Unit = {
-    import com.yuiwai.raus.infrastructure.DateBridge._
     val title = "test"
     val user = User()
       .addTask(title, Date.today)
