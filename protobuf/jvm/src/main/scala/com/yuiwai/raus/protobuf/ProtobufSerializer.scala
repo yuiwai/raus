@@ -2,16 +2,23 @@ package com.yuiwai.raus.protobuf
 
 import java.util.UUID
 
-import com.yuiwai.raus.infrastructure.Serializer
+import com.yuiwai.raus.infrastructure.{DateBridgeModule, Serializer}
 import com.yuiwai.raus.model._
 import raus.user.User.{Group => PGroup, Task => PTask, TaskState => PTaskState}
+import raus.user.User.TaskState.{Date => PDate}
 import raus.user.{User => PUser}
 
-trait ProtobufSerializer extends Serializer[Array[Byte]] {
+trait ProtobufSerializer extends Serializer[Array[Byte]] with DateBridgeModule {
   override protected def serialize(user: User): Array[Byte] = {
     PUser(
       user.tasks.values.toSeq.map { task =>
-        PTask(task.id.toString, Some(PTaskState(task.title)))
+        PTask(task.id.toString, Some(
+          PTaskState(
+            task.title,
+            task.deadline.map(d => PDate(d.year, d.month, d.day)),
+            task.groupName
+          ))
+        )
       },
       user.groups.toSeq.map { group =>
         PGroup(group.name)
@@ -40,6 +47,10 @@ trait ProtobufSerializer extends Serializer[Array[Byte]] {
     def asTask: Task = Task(UUID.fromString(pTask.id), pTask.getState.asTaskState, Added)
   }
   implicit class PTaskStateWrap(pTaskState: PTaskState) {
-    def asTaskState: TaskState = TaskState(pTaskState.title)
+    def asTaskState: TaskState = TaskState(
+      pTaskState.title,
+      pTaskState.deadline.map(d => Date(d.year, d.month, d.day)),
+      Group(pTaskState.group)
+    )
   }
 }
