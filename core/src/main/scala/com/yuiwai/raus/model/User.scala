@@ -30,6 +30,7 @@ case class User(
     val task = tasks(id)
     copy(tasks = tasks.updated(id, task.copy(id, task.state.copy(group = group), Modified)), groups = groups + group)
   }
+  def addRelation(): User = this
 }
 object User {
   def apply(): User = new User(Map.empty, Set.empty, Set.empty, Set.empty, Set.empty, Set.empty, Set.empty, Set.empty)
