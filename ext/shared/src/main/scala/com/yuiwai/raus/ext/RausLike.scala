@@ -40,6 +40,10 @@ trait RausLikeOps {
     update(_.addTask(title))
     this
   }
+  def addTask(title: String, group: Group): this.type = {
+    update(_.addTask(title, None, group))
+    this
+  }
   def doneTask(id: String): this.type = {
     update(_.doneTask(UUID.fromString(id)))
     this

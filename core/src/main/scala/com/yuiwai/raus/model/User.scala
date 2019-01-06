@@ -17,6 +17,7 @@ case class User(
   def expired(now: Date): Seq[Task] = tasks.values.filter(_.isExpired(now)).toSeq
   def addTask(title: String): User = addTask(TaskState(title))
   def addTask(title: String, deadline: Date): User = addTask(TaskState(title, deadline))
+  def addTask(title: String, deadLine: Option[Date], group: Group): User = addTask(TaskState(title, deadLine, group))
   def addTask(task: TaskState): User = {
     val id = UUID.randomUUID()
     copy(tasks = tasks.updated(id, Task(id, task, Added)), groups = groups + task.group)
